@@ -1,0 +1,82 @@
+{
+	"variables": [],
+	"info": {
+		"name": "QueuePool",
+		"_postman_id": "a2be4655-2014-e233-eb9a-bdb831e01101",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET ALL",
+			"request": {
+				"url": "localhost:3000/queues/",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "REMOVE PLAYER",
+			"request": {
+				"url": "localhost:3000/queues/tiradentes",
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"playerId\":\"ae75e27dac57b876696c-3074b10127036207243ac519\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "ADD TEAM",
+			"request": {
+				"url": "localhost:3000/queues/tiradentes",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"playerone\": \"Tiago\", \"playertwo\": \"Fernanda\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "ADD PLAYER",
+			"request": {
+				"url": "localhost:3000/queues/tiradentes",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"playerone\": \"Tiago\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
