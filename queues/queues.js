@@ -17,7 +17,7 @@ var checkOrphanPlayer = function(list) {
   if(list.length > 0) {
     for (let index = 0; index < list.length; index++) {
       const element = list[index];
-      if(!Array.isArray(element)){
+      if(element.length === 1){
         return {index:index, element: element};
       }
     };
@@ -31,27 +31,24 @@ var removePlayerFromQueue = function(playerId, list) {
     var elementIndex;
     for (let index = 0; index < list.length; index++) {
       const element = list[index];
-      if(Array.isArray(element)){
+      if(element.length === 2){
         if(element[0].id === playerId || element[1].id === playerId){
           elementIndex = index;
         }
       }else{
-        if(element.id === playerId){
+        if(element[0].id === playerId){
           elementIndex = index;
         }
       }
     }
-    console.log(elementIndex);
     if(elementIndex > -1){
-      if(!Array.isArray(list[elementIndex])){
-        console.log('não lista!');
+      if(list[elementIndex].length === 1){
         list.splice(elementIndex, 1);
       }else{
-        console.log('lista!');
         if(list[elementIndex][0].id === playerId){
-          list[elementIndex] = list[elementIndex][1];
+          list[elementIndex].splice(0,1);
         }else{
-          list[elementIndex] = list[elementIndex][0];
+          list[elementIndex].splice(1,1);
         }
       }
       return true;
@@ -61,12 +58,13 @@ var removePlayerFromQueue = function(playerId, list) {
 }
 
 var insertPlayerIntoQueue = function(queueName, players){
-  if(Array.isArray(players)){
+  if(players.length === 2){
     queueName.push(players);
   }else{
     var orphan = checkOrphanPlayer(queueName);
     if(orphan) {
-      queueName[orphan.index] = [orphan.element, players];
+      orphan.element.push(players[0]);
+      queueName[orphan.index] = orphan.element;
     }else{
       queueName.push(players);
     }
@@ -93,21 +91,17 @@ router.get('/:id', function(req, res) {
 });
 
 router.post('/:id', function(req, res){
-  var players;
+  var players = [];
   if(req.body.playerone !== null && req.body.playerone !== ''
       && req.body.playerone !== undefined && req.body.playerone !== 'undefined'){
-    players = {id: getNewId(), name: req.body.playerone};
+    players.push({id: getNewId(), name: req.body.playerone});
   }
   if(req.body.playertwo !== null && req.body.playertwo !== ''
       && req.body.playertwo !== undefined && req.body.playertwo !== 'undefined'){
-    if(players) {
-      players = [players, {id: getNewId(), name: req.body.playertwo}]
-    }else{
-      players = {id: getNewId(), name: req.body.playertwo};
-    }
+    players.push({id: getNewId(), name: req.body.playertwo});
   }
   var errorStatus;
-  if(players){
+  if(players.length > 0){
     switch(req.params.id){
       case 'tiradentes':
         insertPlayerIntoQueue(tiradentesQueue, players);
