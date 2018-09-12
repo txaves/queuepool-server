@@ -1,4 +1,5 @@
 var app = require('express')();
+var http = require('http');
 var bodyParser = require('body-parser');
 
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -10,4 +11,7 @@ next();
 });
 app.use('/', require('./routes'));
 
-app.listen(3000);
+var port = process.env.PORT;
+app.set('port', port);
+var server = http.createServer(app);
+server.listen(port);
