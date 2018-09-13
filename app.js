@@ -11,6 +11,7 @@ res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Ty
 next();
 });
 app.use('/', require('./routes'));
+app.use(express.static('queuepool/'));
 
 var port = process.env.PORT;
 app.set('port', port);
