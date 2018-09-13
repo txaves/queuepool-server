@@ -27,6 +27,21 @@ var checkOrphanPlayer = function(list) {
   }
 }
 
+var insertPlayerWithPartner = function(list, player, partner) {
+  if(list.length > 0) {
+    for (let index = 0; index < list.length; index++) {
+      const element = list[index];
+      if(element.length === 1 && element[0].id === partner){
+        element.push(player);
+        return;
+      }
+    };
+    return 404;
+  }else{
+    return 404;
+  }
+}
+
 var removePlayerFromQueue = function(playerIds, list) {
   if(playerIds.length === 1) {
     var playerId = playerIds[0];
@@ -136,8 +151,6 @@ router.post('/:id', function(req, res){
 
 router.delete('/:id', function(req, res){
   var playersToDelete = [];
-  console.log(req.body.playerId);
-  console.log(req.body.playertwoId);
   if(req.body.playerId !== null && req.body.playerId !== ''
       && req.body.playerId !== undefined && req.body.playerId !== 'undefined'){
     playersToDelete.push(req.body.playerId);
@@ -146,7 +159,6 @@ router.delete('/:id', function(req, res){
       && req.body.playertwoId !== undefined && req.body.playertwoId !== 'undefined'){
         playersToDelete.push(req.body.playertwoId);
   }
-  console.log(playersToDelete);
   
   var errorStatus;
   if(playersToDelete.length > 0){
@@ -169,6 +181,35 @@ router.delete('/:id', function(req, res){
   console.log(tiradentesQueue);
   console.log(apoloQueue);
   console.log('------------------------------------------------')
+  res.send();
+});
+
+router.post('/:id/partner', function(req, res){
+  var partnerId = req.body.partnerId;
+  var queueName = req.params.id;
+  var playername = req.body.player;
+  var player;
+  if(playername !== null && playername !== '' && playername !== undefined && playername !== 'undefined'){
+    player = {id: getNewId(), name: playername};
+  }
+  var errorStatus;
+  if(player && partnerId){
+    switch(queueName){
+      case 'tiradentes':
+        errorStatus = insertPlayerWithPartner(tiradentesQueue, player, partnerId);
+        break;
+      case 'apolo':
+        errorStatus = insertPlayerWithPartner(apolo, player, partnerId);
+        break;
+      default:
+        errorStatus = 404;
+    }
+  }else{
+    errorStatus = 400;
+  }
+  if(errorStatus){
+    res.status(errorStatus);
+  }
   res.send();
 });
 
