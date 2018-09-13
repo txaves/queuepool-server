@@ -27,7 +27,9 @@ var checkOrphanPlayer = function(list) {
   }
 }
 
-var removePlayerFromQueue = function(playerId, list) {
+var removePlayerFromQueue = function(playerIds, list) {
+  if(playerIds.length === 1) {
+    var playerId = playerIds[0];
     var elementIndex;
     for (let index = 0; index < list.length; index++) {
       const element = list[index];
@@ -51,10 +53,17 @@ var removePlayerFromQueue = function(playerId, list) {
           list[elementIndex].splice(1,1);
         }
       }
-      return true;
+      return;
     }else{
-      return false;
+      return 404;
     }
+  } else {
+    if(list[0][0].id === playerIds[0] && list[0][1].id === playerIds[1]) {
+      list.shift();
+    }else{
+      return 400;
+    }
+  }
 }
 
 var insertPlayerIntoQueue = function(queueName, players){
@@ -126,24 +135,32 @@ router.post('/:id', function(req, res){
 });
 
 router.delete('/:id', function(req, res){
-  var errorStatus;
+  var playersToDelete = [];
+  console.log(req.body.playerId);
+  console.log(req.body.playertwoId);
   if(req.body.playerId !== null && req.body.playerId !== ''
       && req.body.playerId !== undefined && req.body.playerId !== 'undefined'){
+    playersToDelete.push(req.body.playerId);
+  }
+  if(req.body.playertwoId !== null && req.body.playertwoId !== ''
+      && req.body.playertwoId !== undefined && req.body.playertwoId !== 'undefined'){
+        playersToDelete.push(req.body.playertwoId);
+  }
+  console.log(playersToDelete);
+  
+  var errorStatus;
+  if(playersToDelete.length > 0){
     switch(req.params.id){
       case 'tiradentes':
-        if(!removePlayerFromQueue(req.body.playerId, tiradentesQueue)){
-          errorStatus = 404;
-        }
+        errorStatus = removePlayerFromQueue(playersToDelete, tiradentesQueue);
         break;
       case 'apolo':
-        if(!removePlayerFromQueue(req.body.playerId, apoloQueue)){
-          errorStatus = 404;
-        }
+        errorStatus = removePlayerFromQueue(playersToDelete, apoloQueue);
         break;
       default:
         errorStatus = 404;
     }
-  }else{
+  } else {
     errorStatus = 400;
   }
   if(errorStatus){
